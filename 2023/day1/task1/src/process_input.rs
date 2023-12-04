@@ -1,3 +1,6 @@
+use core::f32::{INFINITY, NEG_INFINITY};
+use std::collections::HashMap;
+
 pub fn process_text(contents: &str) -> u32 {
     return contents
         .split("\n")
@@ -7,63 +10,84 @@ pub fn process_text(contents: &str) -> u32 {
 }
 
 pub fn first_and_last_digits(text: &str) -> Option<u32> {
-    let first_digit = match get_first_digit(text.chars()) {
-        Some(digit) => digit.to_digit(10),
-        None => None,
-    };
-    let last_digit = match get_first_digit(text.chars().rev()) {
-        Some(digit) => digit.to_digit(10),
-        None => None,
-    };
+    let mut first_index: i64 = INFINITY as i64;
+    let mut first_digit: Option<&str> = None;
+    let mut last_index: i64 = NEG_INFINITY as i64;
+    let mut last_digit: Option<&str> = None;
 
-    return Some((first_digit? * 10 + last_digit?) as u32);
-}
+    const DIGITS: [&str; 18] = [
+        "1", "2", "3", "4", "5", "6", "7", "8", "9", "one", "two", "three", "four", "five", "six",
+        "seven", "eight", "nine",
+    ];
 
-pub fn get_first_digit<I>(text: I) -> Option<char>
-where
-    I: Iterator<Item = char>,
-{
-    for c in text {
-        if c.is_digit(10) {
-            return Some(c);
+    for digit_string in DIGITS.iter() {
+        let first_i = match text.find(digit_string) {
+            Some(index) => index as i64,
+            None => continue,
+        };
+        let last_i = match text.rfind(digit_string) {
+            Some(index) => index as i64,
+            None => continue,
+        };
+        if first_i < first_index {
+            first_index = first_i;
+            first_digit = Some(digit_string);
+        }
+        if last_i > last_index {
+            last_index = last_i;
+            last_digit = Some(digit_string);
         }
     }
-    return None;
+    return Some((str_digit_to_int(first_digit?)? * 10 + str_digit_to_int(last_digit?)?) as u32);
+}
+
+pub fn str_digit_to_int(digit: &str) -> Option<u32> {
+    let digit_map: HashMap<_, _> = vec![
+        ("one", 1),
+        ("two", 2),
+        ("three", 3),
+        ("four", 4),
+        ("five", 5),
+        ("six", 6),
+        ("seven", 7),
+        ("eight", 8),
+        ("nine", 9),
+    ]
+    .into_iter()
+    .collect();
+    if digit.chars().count() == 1 {
+        return digit.chars().next()?.to_digit(10);
+    } else {
+        return digit_map.get(digit).cloned();
+    }
 }
 
 #[cfg(test)]
 mod tests {
-    use super::{first_and_last_digits, get_first_digit, process_text};
+    use super::{first_and_last_digits, process_text};
 
     #[test]
     fn finds_correct_sum() {
-        let example_input = String::from("1abc2\npqr3stu8vwx\na1b2c3d4e5f\ntreb7uchet");
-        assert_eq!(process_text(&example_input), 142);
+        let example_input = String::from(
+            "two1nine\neightwothree\nabcone2threexyz \
+            \nxtwone3four\n4nineeightseven2\nzoneight234\n7pqrstsixteen",
+        );
+        assert_eq!(process_text(&example_input), 281);
     }
 
     #[test]
     fn finds_first_and_last_digits() {
         let test_cases = vec![
-            ("1abc2", 12),
-            ("pqr3stu8vwx", 38),
-            ("a1b2c3d4e5f", 15),
-            ("treb7uchet", 77),
+            ("two1nine", 29),
+            ("eightwothree", 83),
+            ("abcone2threexyz", 13),
+            ("xtwone3four", 24),
+            ("4nineeightseven2", 42),
+            ("zoneight234", 14),
+            ("7pqrstsixteen", 76),
         ];
         for (input, expected) in test_cases {
             assert_eq!(first_and_last_digits(input).unwrap(), expected);
-        }
-    }
-
-    #[test]
-    fn finds_first_digit() {
-        let test_cases = vec![
-            ("1abc2", '1'),
-            ("pqr3stu8vwx", '3'),
-            ("a1b2c3d4e5f", '1'),
-            ("treb7uchet", '7'),
-        ];
-        for (input, expected) in test_cases {
-            assert_eq!(get_first_digit(input.chars()).unwrap(), expected);
         }
     }
 }
