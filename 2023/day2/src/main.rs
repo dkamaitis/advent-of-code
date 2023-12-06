@@ -1,6 +1,7 @@
 use std::env;
 use std::fs;
 mod process_task1_input;
+mod process_task2_input;
 
 fn read_file(file_path: &str) -> Result<String, std::io::Error> {
     return fs::read_to_string(file_path);
@@ -15,4 +16,7 @@ fn main() {
     let file_text = read_file(file_path).expect("Input file should be available in this project");
     let id_sum = process_task1_input::process_text(&file_text);
     println!("{}", id_sum);
+
+    let cube_power_sum = process_task2_input::process_text(&file_text);
+    println!("{}", cube_power_sum);
 }
