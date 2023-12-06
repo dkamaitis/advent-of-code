@@ -1,31 +1,35 @@
+use core::f32::NEG_INFINITY;
 use std::collections::HashMap;
 
 pub fn process_text(contents: &str) -> u32 {
     return contents
         .split("\n")
-        .map(find_possible_ids)
+        .map(multiply_max_cubes)
         .filter_map(|x| x)
         .sum();
 }
 
-pub fn find_possible_ids(text: &str) -> Option<u32> {
-    let possible_games: HashMap<&str, u32> =
-        HashMap::from([("red", 12), ("green", 13), ("blue", 14)]);
+pub fn multiply_max_cubes(text: &str) -> Option<u32> {
+    let mut max_cubes: HashMap<&str, u32> = HashMap::from([
+        ("red", NEG_INFINITY as u32),
+        ("green", NEG_INFINITY as u32),
+        ("blue", NEG_INFINITY as u32),
+    ]);
 
     let initial_split = text.split_once(':');
-    let game_id: Option<u32> = initial_split?.0.replace("Game ", "").parse::<u32>().ok();
 
     let flat_game_sets = split_game_info(initial_split?.1);
-
-    let any_larger_than_possible = flat_game_sets
-        .iter()
-        .any(|x| &x.0.parse::<u32>().unwrap() > &possible_games.get(x.1).unwrap());
-
-    if !any_larger_than_possible {
-        return game_id;
-    } else {
-        return None;
+    for cube_set_x in flat_game_sets {
+        let cube_count = cube_set_x.0.parse::<u32>().unwrap();
+        if &cube_count > &max_cubes.get(cube_set_x.1).unwrap() {
+            max_cubes
+                .entry(cube_set_x.1)
+                .and_modify(|e| (*e = cube_count))
+                .or_insert(cube_count);
+        }
     }
+
+    return max_cubes.into_values().reduce(|acc, e| (acc * e));
 }
 
 pub fn split_game_info(game_info: &str) -> Vec<(&str, &str)> {
@@ -48,7 +52,7 @@ pub fn split_game_info(game_info: &str) -> Vec<(&str, &str)> {
 
 #[cfg(test)]
 mod tests {
-    use super::{find_possible_ids, process_text, split_game_info};
+    use super::{multiply_max_cubes, process_text, split_game_info};
 
     #[test]
     fn finds_correct_sum() {
@@ -59,35 +63,29 @@ mod tests {
             \nGame 4: 1 green, 3 red, 6 blue; 3 green, 6 red; 3 green, 15 blue, 14 red \
             \nGame 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green",
         );
-        assert_eq!(process_text(&example_input), 8);
+        assert_eq!(process_text(&example_input), 2286);
     }
 
     #[test]
-    fn finds_correct_ids() {
-        let test_cases: Vec<(&str, Option<u32>)> = vec![
-            (
-                "Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green",
-                Some(1),
-            ),
+    fn multiplies_cubes_correctly() {
+        let test_cases: Vec<(&str, u32)> = vec![
+            ("Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green", 48),
             (
                 "Game 2: 1 blue, 2 green; 3 green, 4 blue, 1 red; 1 green, 1 blue",
-                Some(2),
+                12,
             ),
             (
                 "Game 3: 8 green, 6 blue, 20 red; 5 blue, 4 red, 13 green; 5 green, 1 red",
-                None,
+                1560,
             ),
             (
                 "Game 4: 1 green, 3 red, 6 blue; 3 green, 6 red; 3 green, 15 blue, 14 red",
-                None,
+                630,
             ),
-            (
-                "Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green",
-                Some(5),
-            ),
+            ("Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green", 36),
         ];
         for (input, expected) in test_cases {
-            assert_eq!(find_possible_ids(input), expected);
+            assert_eq!(multiply_max_cubes(input).unwrap(), expected);
         }
     }
 
