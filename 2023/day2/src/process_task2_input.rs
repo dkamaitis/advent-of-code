@@ -20,8 +20,15 @@ pub fn multiply_max_cubes(text: &str) -> Option<u32> {
 
     let flat_game_sets = split_game_info(initial_split?.1);
     for cube_set_x in flat_game_sets {
-        let cube_count = cube_set_x.0.parse::<u32>().unwrap();
-        if &cube_count > &max_cubes.get(cube_set_x.1).unwrap() {
+        let cube_count = cube_set_x
+            .0
+            .parse::<u32>()
+            .expect("first element within dict-like text must be a digit");
+        if &cube_count
+            > &max_cubes
+                .get(cube_set_x.1)
+                .expect("color in text must be red, green, or blue")
+        {
             max_cubes
                 .entry(cube_set_x.1)
                 .and_modify(|e| (*e = cube_count))
@@ -85,7 +92,10 @@ mod tests {
             ("Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green", 36),
         ];
         for (input, expected) in test_cases {
-            assert_eq!(multiply_max_cubes(input).unwrap(), expected);
+            assert_eq!(
+                multiply_max_cubes(input).expect("should return a value for each test case"),
+                expected
+            );
         }
     }
 

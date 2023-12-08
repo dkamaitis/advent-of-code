@@ -87,7 +87,10 @@ mod tests {
             ("7pqrstsixteen", 76),
         ];
         for (input, expected) in test_cases {
-            assert_eq!(first_and_last_digits(input).unwrap(), expected);
+            assert_eq!(
+                first_and_last_digits(input).expect("should return a value for test cases"),
+                expected
+            );
         }
     }
 }

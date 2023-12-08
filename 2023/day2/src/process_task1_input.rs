@@ -17,9 +17,13 @@ pub fn find_possible_ids(text: &str) -> Option<u32> {
 
     let flat_game_sets = split_game_info(initial_split?.1);
 
-    let any_larger_than_possible = flat_game_sets
-        .iter()
-        .any(|x| &x.0.parse::<u32>().unwrap() > &possible_games.get(x.1).unwrap());
+    let any_larger_than_possible = flat_game_sets.iter().any(|x| {
+        &x.0.parse::<u32>()
+            .expect("first element within dict-like text must be a digit")
+            > &possible_games
+                .get(x.1)
+                .expect("color in text must be red, green, or blue")
+    });
 
     if !any_larger_than_possible {
         return game_id;
