@@ -56,7 +56,7 @@ pub fn str_digit_to_int(digit: &str) -> Option<u32> {
     .into_iter()
     .collect();
     if digit.chars().count() == 1 {
-        return digit.chars().next()?.to_digit(10);
+        return digit.parse::<u32>().ok();
     } else {
         return digit_map.get(digit).cloned();
     }
@@ -87,7 +87,10 @@ mod tests {
             ("7pqrstsixteen", 76),
         ];
         for (input, expected) in test_cases {
-            assert_eq!(first_and_last_digits(input).unwrap(), expected);
+            assert_eq!(
+                first_and_last_digits(input).expect("should return a value for test cases"),
+                expected
+            );
         }
     }
 }
