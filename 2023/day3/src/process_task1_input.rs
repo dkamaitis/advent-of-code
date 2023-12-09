@@ -14,40 +14,45 @@ pub fn find_engine_part_numbers(contents: Vec<Vec<char>>) -> Vec<u32> {
 
     let mut adjacent_indices: Vec<(usize, usize)>;
     let mut current_char: char;
+    let mut current_char_has_adjacent_symbols: bool;
+    let mut current_digits: Vec<char>;
+    let mut current_digits_have_adjacent_symbols: bool;
+
     for i in 0..m {
-        let mut temp_digits: Vec<char> = vec![];
-        let mut temp_digits_have_adjacent: bool = false;
+        current_digits = vec![];
+        current_digits_have_adjacent_symbols = false;
         n = contents[i].len();
         if n == 0 {
             continue;
         }
         for j in 0..n {
             current_char = contents[i][j];
-            adjacent_indices = generate_adjacent_indices(i, j, m, n);
-            let has_adjacent_symbols: bool = adjacent_indices
-                .into_iter()
-                .map(|x| contents[x.0][x.1])
-                .any(|x| x != '.' && !x.is_digit(10));
 
             if current_char.is_digit(10) {
-                temp_digits.push(current_char);
-                if has_adjacent_symbols {
-                    temp_digits_have_adjacent = true;
+                current_digits.push(current_char);
+
+                adjacent_indices = generate_adjacent_indices(i, j, m, n);
+                current_char_has_adjacent_symbols = adjacent_indices
+                    .into_iter()
+                    .map(|x| contents[x.0][x.1])
+                    .any(|x| x != '.' && !x.is_digit(10));
+                if current_char_has_adjacent_symbols {
+                    current_digits_have_adjacent_symbols = true;
                 }
             }
-            if (j == n - 1 || !current_char.is_digit(10)) && temp_digits_have_adjacent {
+            if (j == n - 1 || !current_char.is_digit(10)) && current_digits_have_adjacent_symbols {
                 engine_part_numbers.push(
-                    temp_digits
+                    current_digits
                         .iter()
                         .collect::<String>()
                         .parse::<u32>()
                         .ok()
-                        .unwrap(),
+                        .expect("current digits should only contain digits"),
                 );
             }
             if !current_char.is_digit(10) {
-                temp_digits.clear();
-                temp_digits_have_adjacent = false;
+                current_digits.clear();
+                current_digits_have_adjacent_symbols = false;
             }
         }
     }
