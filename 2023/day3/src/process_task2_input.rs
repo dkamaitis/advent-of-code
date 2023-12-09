@@ -20,9 +20,6 @@ pub fn find_gear_ratios(contents: Vec<Vec<char>>) -> Vec<u32> {
 
     for i in 0..m {
         n = contents[i].len();
-        if n == 0 {
-            continue;
-        }
         for j in 0..n {
             current_char = contents[i][j];
 
