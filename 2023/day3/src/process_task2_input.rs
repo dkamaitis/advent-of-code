@@ -1,17 +1,15 @@
-struct MatrixEntry {
-    row_i: usize,
-    col_j: usize,
-}
-
 pub fn process_text(contents: &str) -> u32 {
-    let contents_vec: Vec<Vec<char>> = contents.split("\n").map(|x| x.chars().collect()).collect();
+    let contents_vec: Vec<Vec<char>> = contents
+        .split("\n")
+        .map(|line| line.chars().collect())
+        .collect();
 
     let gear_ratios: Vec<u32> = find_gear_ratios(contents_vec);
     return gear_ratios.iter().sum();
 }
 
 pub fn find_gear_ratios(contents: Vec<Vec<char>>) -> Vec<u32> {
-    let contents: Vec<Vec<char>> = contents.into_iter().filter(|x| x.len() > 0).collect();
+    let contents: Vec<Vec<char>> = contents.into_iter().filter(|line| line.len() > 0).collect();
     let mut gear_ratios: Vec<u32> = vec![];
 
     let m: usize = contents.len();
@@ -31,19 +29,28 @@ pub fn find_gear_ratios(contents: Vec<Vec<char>>) -> Vec<u32> {
             if current_char == '*' {
                 adjacent_indices = generate_adjacent_indices(i, j, m, n);
                 // Represents: [(line_i, (number_start, number_end))]
-                let mut adjacent_number_ranges: Vec<(usize, (usize, usize))> =
-                    adjacent_indices
-                        .into_iter()
-                        .filter(|x| contents[x.0][x.1].is_digit(10))
-                        .map(|x| (x.0, crawl_number(x.1, &contents[x.0], n)))
-                        .collect();
+                let mut adjacent_number_ranges: Vec<(usize, (usize, usize))> = adjacent_indices
+                    .into_iter()
+                    .filter(|char_entry| contents[char_entry.0][char_entry.1].is_digit(10))
+                    .map(|char_entry| {
+                        (
+                            char_entry.0,
+                            crawl_number(char_entry.1, &contents[char_entry.0], n),
+                        )
+                    })
+                    .collect();
                 adjacent_number_ranges.sort();
                 adjacent_number_ranges.dedup();
                 if adjacent_number_ranges.len() == 2 {
                     gear_ratios.push(
                         adjacent_number_ranges
                             .iter()
-                            .map(|x| chars_to_u32(contents[x.0][x.1 .0..=x.1 .1].to_vec()))
+                            .map(|number_entry| {
+                                let (row_i, (number_start, number_end)) = *number_entry;
+                                return chars_to_u32(
+                                    contents[row_i][number_start..=number_end].to_vec(),
+                                );
+                            })
                             .reduce(|acc, e| acc * e)
                             .expect("iterator should always have two elements"),
                     );
@@ -53,7 +60,6 @@ pub fn find_gear_ratios(contents: Vec<Vec<char>>) -> Vec<u32> {
     }
     return gear_ratios;
 }
-
 
 pub fn crawl_number(digit_index: usize, line: &Vec<char>, n: usize) -> (usize, usize) {
     let mut number_start: usize = digit_index;
