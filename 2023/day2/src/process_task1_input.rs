@@ -8,7 +8,7 @@ pub fn process_text(contents: &str) -> u32 {
         .sum();
 }
 
-pub fn find_possible_ids(text: &str) -> Option<u32> {
+fn find_possible_ids(text: &str) -> Option<u32> {
     let possible_games: HashMap<&str, u32> =
         HashMap::from([("red", 12), ("green", 13), ("blue", 14)]);
 
@@ -32,7 +32,7 @@ pub fn find_possible_ids(text: &str) -> Option<u32> {
     }
 }
 
-pub fn split_game_info(game_info: &str) -> Vec<(&str, &str)> {
+fn split_game_info(game_info: &str) -> Vec<(&str, &str)> {
     let game_sets: Vec<Vec<(&str, &str)>> = game_info
         .split(';')
         .map(|cube_set| {
