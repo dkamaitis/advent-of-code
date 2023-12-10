@@ -9,7 +9,7 @@ pub fn process_text(contents: &str) -> u32 {
         .sum();
 }
 
-pub fn first_and_last_digits(text: &str) -> Option<u32> {
+fn first_and_last_digits(text: &str) -> Option<u32> {
     let mut first_index: i64 = INFINITY as i64;
     let mut first_digit: Option<&str> = None;
     let mut last_index: i64 = NEG_INFINITY as i64;
@@ -41,7 +41,7 @@ pub fn first_and_last_digits(text: &str) -> Option<u32> {
     return Some((str_digit_to_int(first_digit?)? * 10 + str_digit_to_int(last_digit?)?) as u32);
 }
 
-pub fn str_digit_to_int(digit: &str) -> Option<u32> {
+fn str_digit_to_int(digit: &str) -> Option<u32> {
     let digit_map: HashMap<_, _> = vec![
         ("one", 1),
         ("two", 2),
