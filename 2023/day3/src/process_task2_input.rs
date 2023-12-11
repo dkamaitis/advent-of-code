@@ -8,7 +8,7 @@ pub fn process_text(contents: &str) -> u32 {
     return gear_ratios.iter().sum();
 }
 
-pub fn find_gear_ratios(contents: Vec<Vec<char>>) -> Vec<u32> {
+fn find_gear_ratios(contents: Vec<Vec<char>>) -> Vec<u32> {
     let contents: Vec<Vec<char>> = contents.into_iter().filter(|line| line.len() > 0).collect();
     let mut gear_ratios: Vec<u32> = vec![];
 
@@ -58,7 +58,7 @@ pub fn find_gear_ratios(contents: Vec<Vec<char>>) -> Vec<u32> {
     return gear_ratios;
 }
 
-pub fn crawl_number(digit_index: usize, line: &Vec<char>, n: usize) -> (usize, usize) {
+fn crawl_number(digit_index: usize, line: &Vec<char>, n: usize) -> (usize, usize) {
     let mut number_start: usize = digit_index;
     let mut number_end: usize = digit_index;
     for prev_i in (0..(digit_index)).rev() {
@@ -78,7 +78,7 @@ pub fn crawl_number(digit_index: usize, line: &Vec<char>, n: usize) -> (usize, u
     return (number_start, number_end);
 }
 
-pub fn chars_to_u32(digits: Vec<char>) -> u32 {
+fn chars_to_u32(digits: Vec<char>) -> u32 {
     return digits
         .iter()
         .collect::<String>()
@@ -87,7 +87,7 @@ pub fn chars_to_u32(digits: Vec<char>) -> u32 {
         .expect("must only attempt to parse digit chars into u32");
 }
 
-pub fn generate_adjacent_indices(i: usize, j: usize, m: usize, n: usize) -> Vec<(usize, usize)> {
+fn generate_adjacent_indices(i: usize, j: usize, m: usize, n: usize) -> Vec<(usize, usize)> {
     let i = i as i32;
     let j = j as i32;
     let n = n as i32;
