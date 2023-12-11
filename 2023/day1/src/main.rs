@@ -13,6 +13,6 @@ fn main() {
         _ => panic!("Expected exactly one argument: input file path"),
     };
     let file_text = read_file(file_path).expect("Input file should be available in this project");
-    let first_and_last_digit_sum = process_input::process_text(&file_text);
-    println!("{}", first_and_last_digit_sum);
+    let sum_2 = process_input::process_text(&file_text);
+    println!("{}", sum_2);
 }
