@@ -6,16 +6,16 @@ pub fn process_text(contents: &str) -> u32 {
         let (i, line_j) = x;
         let card_points =
             get_card_points(line_j).expect("should only parse valid card lines") as usize;
-        add_to_vec(&mut card_copies, i + 1, i + card_points + 1);
+        let number_to_add = card_copies[i];
+        add_to_vec(&mut card_copies, i + 1, i + card_points + 1, number_to_add);
     });
     return card_copies.into_iter().map(|x| x as u32).sum();
 }
 
-fn add_to_vec(vec: &mut Vec<usize>, range_start: usize, range_end: usize) {
+fn add_to_vec(vec: &mut Vec<usize>, range_start: usize, range_end: usize, number: usize) {
     for index in range_start..range_end {
-        let replacement_value = vec[range_start - 1];
         if let Some(element) = vec.get_mut(index) {
-            *element += replacement_value;
+            *element += number;
         }
     }
 }
@@ -52,7 +52,7 @@ fn str_to_vec_u32(text: &str) -> Vec<u32> {
 
 #[cfg(test)]
 mod tests {
-    use super::{get_card_points, process_text, split_card_info, str_to_vec_u32};
+    use super::{get_card_points, add_to_vec, process_text, split_card_info, str_to_vec_u32};
 
     #[test]
     fn finds_correct_sum() {
@@ -65,6 +65,13 @@ mod tests {
             \nCard 6: 31 18 13 56 72 | 74 77 10 23 35 67 36 11",
         );
         assert_eq!(process_text(&example_input), 30);
+    }
+
+    #[test]
+    fn adds_number_to_vec_correctly() {
+        let mut example_input = vec![1; 10];
+        add_to_vec(&mut example_input, 1, 3, 3);
+        assert_eq!(example_input, vec![1, 4, 4, 1, 1, 1, 1, 1, 1, 1]);
     }
 
     #[test]
