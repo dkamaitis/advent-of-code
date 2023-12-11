@@ -9,7 +9,7 @@ pub fn process_text(contents: &str) -> u32 {
         .sum();
 }
 
-pub fn multiply_max_cubes(text: &str) -> Option<u32> {
+fn multiply_max_cubes(text: &str) -> Option<u32> {
     let mut max_cubes: HashMap<&str, u32> = HashMap::from([
         ("red", NEG_INFINITY as u32),
         ("green", NEG_INFINITY as u32),
@@ -39,7 +39,7 @@ pub fn multiply_max_cubes(text: &str) -> Option<u32> {
     return max_cubes.into_values().reduce(|acc, e| (acc * e));
 }
 
-pub fn split_game_info(game_info: &str) -> Vec<(&str, &str)> {
+fn split_game_info(game_info: &str) -> Vec<(&str, &str)> {
     let game_sets: Vec<Vec<(&str, &str)>> = game_info
         .split(';')
         .map(|cube_set| {

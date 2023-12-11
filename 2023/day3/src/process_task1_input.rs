@@ -5,7 +5,7 @@ pub fn process_text(contents: &str) -> u32 {
     return engine_part_numbers.iter().sum();
 }
 
-pub fn find_engine_part_numbers(contents: Vec<Vec<char>>) -> Vec<u32> {
+fn find_engine_part_numbers(contents: Vec<Vec<char>>) -> Vec<u32> {
     let contents: Vec<Vec<char>> = contents.into_iter().filter(|x| x.len() > 0).collect();
     let mut engine_part_numbers: Vec<u32> = vec![];
 
@@ -59,7 +59,7 @@ pub fn find_engine_part_numbers(contents: Vec<Vec<char>>) -> Vec<u32> {
     return engine_part_numbers;
 }
 
-pub fn generate_adjacent_indices(i: usize, j: usize, m: usize, n: usize) -> Vec<(usize, usize)> {
+fn generate_adjacent_indices(i: usize, j: usize, m: usize, n: usize) -> Vec<(usize, usize)> {
     let i = i as i32;
     let j = j as i32;
     let n = n as i32;
