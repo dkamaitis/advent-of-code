@@ -1,18 +1,14 @@
 (library
-  (name task1)
-  (modules task1))
+  (name day1)
+  (modules task1 task2))
 
 (executable
  (name test_task1)
  (modules test_task1)
- (libraries task1 ounit2))
+ (libraries day1 ounit2))
  
-(library
-  (name task2)
-  (modules task2))
-
 (executable
  (name test_task2)
  (modules test_task2)
- (libraries task2 ounit2))
+ (libraries day1 ounit2))
  
