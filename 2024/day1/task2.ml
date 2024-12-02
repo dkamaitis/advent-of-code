@@ -12,23 +12,20 @@ let transpose acc line =
   | [ first; second ] -> (first :: fst acc, second :: snd acc)
   | _ -> failwith "Expected list of length 2"
 
-(* let pairwise_abs_diff x y = abs (x - y) *)
-
-let find_or_add tbl key =
-  let current =
-    match Hashtbl.find_opt tbl key with Some v -> v + 1 | None -> 1
-  in Hashtbl.replace tbl key current
-  
+let add_or_inc key lst =
+  match lst with
+  | [] -> (key, 1) :: []
+  | (key', value) :: t ->
+      if key = key' then (key', value + 1) :: t else (key, 1) :: lst
 
 let rec count_in_y lst1 lst2 acc =
   match (lst1, lst2) with
-  | [], _ -> (lst1, lst2)
-  | _, [] -> (lst1, lst2)
+  | [], _ -> acc
+  | _, [] -> acc
   | x :: xs, y :: ys ->
-      (* REPLACE with Map *)
-      if x = y then count_in_y xs ys (find_or_add acc x)
-      else if x < y then count_in_y xs ys acc
-      else count_in_y xs ys acc
+      if x = y then count_in_y (x :: xs) ys (add_or_inc x acc)
+      else if x < y then count_in_y xs (y :: ys) acc
+      else count_in_y (x :: xs) ys acc
 
 let solve file_name =
   let contents = read_contents file_name in
@@ -41,8 +38,9 @@ let solve file_name =
          ([], [])
     |> fun (lst1, lst2) ->
     (List.sort Int.compare lst1, List.sort Int.compare lst2)
-    (* |> fun (lst1, lst2) -> *)
-    (*     List.map2  *)
+    |> fun (lst1, lst2) ->
+    count_in_y lst1 lst2 []
+    |> List.fold_left (fun acc (k, v) -> acc + (k * v)) 0
   in
   result
 

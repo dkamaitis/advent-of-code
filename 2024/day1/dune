@@ -14,5 +14,5 @@
 (executable
  (name test_task2)
  (modules test_task2)
- (libraries task1 ounit2))
+ (libraries task2 ounit2))
  

@@ -1,5 +1,5 @@
 (* open OUnit2 *)
-open Task1
+open Task2
 
 let file_name = "input"
 
