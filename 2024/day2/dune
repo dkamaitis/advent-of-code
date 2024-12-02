@@ -1,0 +1,9 @@
+(library
+  (name day2)
+  (modules task1))
+
+(executable
+ (name test_task1)
+ (modules test_task1)
+ (libraries day2 ounit2))
+ 
