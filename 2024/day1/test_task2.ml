@@ -1,5 +1,4 @@
-(* open OUnit2 *)
-open Task2
+open Day1.Task2
 
 let file_name = "input"
 
