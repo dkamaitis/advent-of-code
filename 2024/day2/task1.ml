@@ -31,9 +31,6 @@ let check_levels lst =
   | x :: y :: t -> check_levels_aux (y :: t) (check_pair x y)
   | _ -> 0
 
-let rec sum_tr lst acc =
-  match lst with [] -> acc | h :: t -> sum_tr t (h + acc)
-
 let solve file_name =
   let contents = read_contents file_name in
   let result =
